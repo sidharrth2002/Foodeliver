@@ -34,9 +34,10 @@ public class Restaurant extends Entity {
 //    }
 
     private String toCSVString() {
-        return code + " " + name + " " + address;
+        return code + ",," + name + ",," + address;
     }
 
+    //saving restaurants data to file
     private static void saveRestaurantsToFile(ArrayList<Restaurant> restaurants) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < restaurants.size(); i++) {
@@ -45,12 +46,30 @@ public class Restaurant extends Entity {
         Files.write(Paths.get("./files/restaurant/restaurants.csv"), sb.toString().getBytes());
     }
 
+    //saving items data to file
     private static void saveItemsToFile(ArrayList<Item> items) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < items.size(); i++) {
             sb.append(items.get(i).toCSVString() + "\n");
         }
         Files.write(Paths.get("./files/item/items.csv"), sb.toString().getBytes());
+    }
+
+    public static ArrayList<Restaurant> getRestaurantsFromFile() throws IOException{
+        ArrayList<Restaurant> restaurants = new ArrayList<>();
+
+        // read students.csv into a list of lines.
+        List<String> lines = Files.readAllLines(Paths.get("./files/restaurant/restaurants.csv"));
+        for (int i = 0; i < lines.size(); i++) {
+            // split a line by comma
+            String[] dataInFile = lines.get(i).split(",,");
+            String code = dataInFile[0];
+            String name = dataInFile[1];
+            String address = dataInFile[2];
+
+            restaurants.add(new Restaurant(name, address));
+        }
+        return restaurants;
     }
 
     public static void main(String[] args) {
@@ -65,13 +84,31 @@ public class Restaurant extends Entity {
             e.printStackTrace();
         }
 
+
+        try {
+            ArrayList<Restaurant> restaurants2 = getRestaurantsFromFile();
+            System.out.println(restaurants2.get(1).address);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item("Item1", 35.50, "Tasty food", restaurants.get(0)));
-        items.add(new Item("Item2", 35.50, "Tasty food", restaurants.get(0)));
-        items.add(new Item("Item3", 35.50, "Tasty food", restaurants.get(0)));
+        items.add(new Item("Item1", 35.50, "Tasty food", restaurants.get(0).getCode(), restaurants.get(0).getName()));
+        items.add(new Item("Item2", 35.60, "Tasty food", restaurants.get(1).getCode(), restaurants.get(1).getName()));
+        items.add(new Item("Item3", 35.50, "Tasty food", restaurants.get(1).getCode(),restaurants.get(1).getName()));
 
         try {
             saveItemsToFile(items);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Item> items2 = new ArrayList<>();
+
+        try {
+            items2 = Item.getItemsFromFile();
+            System.out.println(items.get(2).getRestaurantName());
         } catch (IOException e) {
             e.printStackTrace();
         }
