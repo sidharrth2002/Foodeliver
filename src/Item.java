@@ -11,7 +11,7 @@ public class Item {
     private String description;
     private String restaurantCode;
     private String restaurantName;
-    private static int count1, count2, count3;
+    public static int count1, count2, count3;
 
     public Item() {}
 
@@ -104,7 +104,6 @@ public class Item {
             String description = dataInFile[3];
             String restaurantCode = code.substring(0,2);
             String restaurantName = null;
-
             for (Restaurant restaurant: restaurants) {
                 if (restaurant.getCode().equals(restaurantCode)) {
                     restaurantName = restaurant.getName();

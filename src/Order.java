@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,8 +14,11 @@ public class Order {
     private String customerCode;
     private String pickupType;
     private String orderStatus = "Preparing";
-    //contains the item objects chosen
-    private ArrayList<String> itemsToOrder;
+
+    //contains the codes of the items chosen
+    private ArrayList<String> itemCodes;
+    //contains item objects chosen
+    public ArrayList<Item> itemsToOrder;
     //contains the quantity of corresponding item object- both act as parallel arrays
     private ArrayList<Integer> quantityOfItems;
     private double totalPrice;
@@ -23,41 +27,54 @@ public class Order {
 
     public Order() {}
 
-    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType) {
+    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemCodes, ArrayList<Integer> quantityOfItems, String pickupType) {
         this.restaurantName = restaurantName;
         this.restaurantCode = restaurantCode;
         this.customerName = customerName;
         this.customerCode = customerCode;
         this.pickupType = pickupType;
 
-        this.itemsToOrder = new ArrayList<>(itemsToOrder);
+        this.itemCodes = new ArrayList<>(itemCodes);
         this.quantityOfItems = new ArrayList<>(quantityOfItems);
+
+        this.itemsToOrder = new ArrayList<>();
+        System.out.println("for order");
+//        Item.count1 = Item.count2 = Item.count3 = 0;
+        for (int i = 0; i < this.itemCodes.size(); i++) {
+            this.itemsToOrder.add(getItemFromItemCode(this.itemCodes.get(i)));
+        }
+
 //        this.totalPrice = calculateTotalPrice();
 
         this.code = "o" + count++ + "-" + restaurantCode + "-" + customerCode;
     }
 
-    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
+    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemCodes, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
         this.restaurantName = restaurantName;
         this.restaurantCode = restaurantCode;
         this.customerName = customerName;
         this.customerCode = customerCode;
         this.orderStatus = orderStatus;
-        this.itemsToOrder = new ArrayList<>(itemsToOrder);
+        this.itemCodes = new ArrayList<>(itemCodes);
         this.quantityOfItems = new ArrayList<>(quantityOfItems);
 //        this.totalPrice = calculateTotalPrice();
+
+        this.itemsToOrder = new ArrayList<>();
+        for (int i = 0; i < itemCodes.size(); i++) {
+            itemsToOrder.add(getItemFromItemCode(itemCodes.get(i)));
+        }
 
         this.code = "o" + count++ + "-" + restaurantCode + "-" + customerCode;
     }
 
-    //uses item price and quantity arraylists to calculate the total price of the order
-//    private double calculateTotalPrice() {
-//        double total = 0;
-//        for (int i = 0; i < itemsToOrder.size(); i++) {
-//            total += (itemsToOrder.get(i).getPrice() * quantityOfItems.get(i));
-//        }
-//        return total;
-//    }
+//    uses item price and quantity arraylists to calculate the total price of the order
+    private double calculateTotalPrice() {
+        double total = 0;
+        for (int i = 0; i < itemsToOrder.size(); i++) {
+            total += (itemsToOrder.get(i).getPrice() * quantityOfItems.get(i));
+        }
+        return total;
+    }
 
     //setters
     public String getOrderStatus() {
@@ -79,7 +96,7 @@ public class Order {
         System.out.println();
         // calling the item's describe method for each item in the order
         for (int i = 0; i < itemsToOrder.size(); i++) {
-//            itemsToOrder.get(i).describe();
+            itemsToOrder.get(i).describe();
             System.out.println("Quantity : " + quantityOfItems.get(i));
         }
         System.out.println("=======================================================================");
@@ -92,11 +109,11 @@ public class Order {
         sb.append(code).append(",,").append(restaurantName).append(",,").append(customerName).append(",,").append(orderStatus).append(",,").append(pickupType);
 
         StringBuilder sb2 = new StringBuilder();
-        for (int i = 0; i < itemsToOrder.size(); i++) {
-            if (i != itemsToOrder.size() - 1) {
-                sb2.append(itemsToOrder.get(i)).append(",");
+        for (int i = 0; i < itemCodes.size(); i++) {
+            if (i != itemCodes.size() - 1) {
+                sb2.append(itemCodes.get(i)).append(",");
             } else {
-                sb2.append(itemsToOrder.get(i));
+                sb2.append(itemCodes.get(i));
             }
         }
 
@@ -159,11 +176,41 @@ public class Order {
         return orders;
     }
 
+    //based on the item code given, will find and return Item object
+    public static Item getItemFromItemCode(String itemCode) {
+        ArrayList<Item> allItems = new ArrayList<>();
+//        Item finalItem = new Item("none", 1.50, "nothing", "r1", "Crazy");
+        Item finalItem = null;
+        try {
+            allItems = Item.getItemsFromFile();
+//            System.out.println(allItems.get(1).getCode());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < allItems.size(); i++) {
+            Item item = allItems.get(i);
+
+            if (item.getCode().substring(0, 2).equals("r1")) {
+                Item.count1 -= 1;
+            } else if (item.getCode().substring(0,2).equals("r2")) {
+                Item.count2 -= 1;
+            } else {
+                Item.count3 -= 1;
+            }
+
+//            System.out.println(item.getCode());
+            if (item.getCode().equals(itemCode)) {
+                finalItem = item;
+            }
+        }
+        return finalItem;
+    }
+
     public static void main(String[] args) {
         ArrayList<Order> orders = new ArrayList<>();
 
         ArrayList<String> itemsToOrder = new ArrayList<>(Arrays.asList("r1-1", "r1-2", "r1-3"));
-        ArrayList<Integer> quantityOfItems = new ArrayList<>(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> quantityOfItems = new ArrayList<>(Arrays.asList(1, 3, 3));
         orders.add(new Order("KFC", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery"));
         orders.add(new Order("McD", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Takeaway"));
         orders.add(new Order("Burger King", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery"));
@@ -176,7 +223,9 @@ public class Order {
 
         try {
             ArrayList<Order> orders2 = getOrdersFromFile();
-            System.out.println(orders2.get(2).restaurantName);
+            System.out.println("do we get hrr");
+            System.out.println(orders2.get(1).quantityOfItems);
+            System.out.println(orders2.get(2).itemsToOrder.get(1).getName());
         } catch (IOException e) {
             e.printStackTrace();
         }
