@@ -139,7 +139,7 @@ public class Order {
         Files.write(Paths.get("./files/order/orders.csv"), sb.toString().getBytes());
     }
 
-    public static ArrayList<Order> getOrdersFromFile() throws IOException {
+    public static ArrayList<Order> getOrdersFromFile(ArrayList<Item> itemList) throws IOException {
         ArrayList<Order> orders = new ArrayList<>();
 
         // read students.csv into a list of lines.
@@ -170,7 +170,7 @@ public class Order {
 //                quantityOfItems.add(Integer.parseInt(quantity[i]));
 //            }
 
-            Order order = new Order(restaurantName, code.substring(3,5), customerName, code.substring(6,8), itemsToOrder, quantityOfItems, pickupType, orderStatus, Item.getItemsFromFile());
+            Order order = new Order(restaurantName, code.substring(3,5), customerName, code.substring(6,8), itemsToOrder, quantityOfItems, pickupType, orderStatus, itemList);
             orders.add(order);
             }
         return orders;
@@ -202,25 +202,40 @@ public class Order {
 
     public static void main(String[] args) throws IOException {
 
-//        try {
+        ArrayList<Item> itemsList = Item.getItemsFromFile();
+
+        System.out.println(Item.count1);
+        System.out.println(Item.count2);
+        System.out.println(Item.count3);
+
+        try {
 //            Item.count1 = Item.count2 = Item.count3 = 0;
-//            ArrayList<Order> orders2 = getOrdersFromFile();
-//            System.out.println(orders2.get(1).quantityOfItems);
-//            System.out.println(orders2.get(2).itemsToOrder.get(1).getName());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            ArrayList<Order> orders2 = getOrdersFromFile(itemsList);
+            System.out.println(orders2.get(1).quantityOfItems);
+            System.out.println(orders2.get(2).itemsToOrder.get(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(Item.count1);
+        System.out.println(Item.count2);
+        System.out.println(Item.count3);
 
 //        System.out.println("Count after fetching from file");
 
-        ArrayList<Item> itemsList = Item.getItemsFromFile();
-
+//
         ArrayList<Order> orders = new ArrayList<>();
         ArrayList<String> itemsToOrder = new ArrayList<>(Arrays.asList("r3-1", "r2-1", "r3-2"));
         ArrayList<Integer> quantityOfItems = new ArrayList<>(Arrays.asList(1, 3, 3));
         orders.add(new Order("KFC", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery", itemsList));
         orders.add(new Order("McD", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Takeaway",itemsList));
         orders.add(new Order("Burger King", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery", itemsList));
+
+        System.out.println(Item.count1);
+        System.out.println(Item.count2);
+        System.out.println(Item.count3);
+
+        //
 
         try {
             saveOrdersToFile(orders);
@@ -229,9 +244,13 @@ public class Order {
         }
 
         System.out.println("final");
+        System.out.println(Item.count1);
+        System.out.println(Item.count2);
+        System.out.println(Item.count3);
 
 
-
+        //
+//        System.out.println("final");
 
     }
 }
