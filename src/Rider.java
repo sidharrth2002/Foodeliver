@@ -6,7 +6,9 @@ public class Rider {
 
     public Rider() {}
     public Rider(String name, String phone) {
-
+        this.name = name;
+        this.phone = phone;
+        this.code = "d" + count++;
     }
 
 }

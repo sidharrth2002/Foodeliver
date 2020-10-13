@@ -11,6 +11,7 @@ public class Order {
     private String restaurantCode;
     private String customerName;
     private String customerCode;
+    private String pickupType;
     private String orderStatus = "Preparing";
     //contains the item objects chosen
     private ArrayList<String> itemsToOrder;
@@ -22,12 +23,26 @@ public class Order {
 
     public Order() {}
 
-    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemsToOrder, ArrayList<Integer> quantityOfItems) {
+    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType) {
         this.restaurantName = restaurantName;
         this.restaurantCode = restaurantCode;
         this.customerName = customerName;
         this.customerCode = customerCode;
+        this.pickupType = pickupType;
 
+        this.itemsToOrder = new ArrayList<>(itemsToOrder);
+        this.quantityOfItems = new ArrayList<>(quantityOfItems);
+//        this.totalPrice = calculateTotalPrice();
+
+        this.code = "o" + count++ + "-" + restaurantCode + "-" + customerCode;
+    }
+
+    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
+        this.restaurantName = restaurantName;
+        this.restaurantCode = restaurantCode;
+        this.customerName = customerName;
+        this.customerCode = customerCode;
+        this.orderStatus = orderStatus;
         this.itemsToOrder = new ArrayList<>(itemsToOrder);
         this.quantityOfItems = new ArrayList<>(quantityOfItems);
 //        this.totalPrice = calculateTotalPrice();
@@ -74,7 +89,7 @@ public class Order {
     public String toCSVString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(code).append(",,").append(restaurantName).append(",,").append(customerName);
+        sb.append(code).append(",,").append(restaurantName).append(",,").append(customerName).append(",,").append(orderStatus).append(",,").append(pickupType);
 
         StringBuilder sb2 = new StringBuilder();
         for (int i = 0; i < itemsToOrder.size(); i++) {
@@ -118,8 +133,10 @@ public class Order {
             String code = dataInFile[0];
             String restaurantName = dataInFile[1];
             String customerName = dataInFile[2];
+            String orderStatus = dataInFile[3];
+            String pickupType = dataInFile[4];
 
-            String[] items = dataInFile[3].split(",");
+            String[] items = dataInFile[5].split(",");
             ArrayList<String> itemsToOrder = new ArrayList<>(Arrays.asList(items));
 
 //            for (int i = 0; i < items.length; i++) {
@@ -127,7 +144,7 @@ public class Order {
 //            }
 
             ArrayList<Integer> quantityOfItems = new ArrayList<>();
-            String[] quantity = dataInFile[4].split(",");
+            String[] quantity = dataInFile[6].split(",");
             for (String s : quantity) {
                 quantityOfItems.add(Integer.parseInt(s));
             }
@@ -136,7 +153,7 @@ public class Order {
 //                quantityOfItems.add(Integer.parseInt(quantity[i]));
 //            }
 
-            Order order = new Order(restaurantName, code.substring(3,5), customerName, code.substring(6,8), itemsToOrder, quantityOfItems);
+            Order order = new Order(restaurantName, code.substring(3,5), customerName, code.substring(6,8), itemsToOrder, quantityOfItems, pickupType, orderStatus);
             orders.add(order);
             }
         return orders;
@@ -147,9 +164,9 @@ public class Order {
 
         ArrayList<String> itemsToOrder = new ArrayList<>(Arrays.asList("r1-1", "r1-2", "r1-3"));
         ArrayList<Integer> quantityOfItems = new ArrayList<>(Arrays.asList(1, 2, 3));
-        orders.add(new Order("KFC", "r1", "Sid", "c1", itemsToOrder, quantityOfItems));
-        orders.add(new Order("McD", "r1", "Sid", "c1", itemsToOrder, quantityOfItems));
-        orders.add(new Order("Burger King", "r1", "Sid", "c1", itemsToOrder, quantityOfItems));
+        orders.add(new Order("KFC", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery"));
+        orders.add(new Order("McD", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Takeaway"));
+        orders.add(new Order("Burger King", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery"));
 
         try {
             saveOrdersToFile(orders);

@@ -9,6 +9,8 @@ public class Customer extends Entity {
     private String phone;
     private static int count = 1;
 
+    //static queue to assign riders
+
     public Customer() {}
 
     public Customer(String name, String address, String phone) {
