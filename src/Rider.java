@@ -30,8 +30,8 @@ public class Rider {
         Files.write(Paths.get("./files/rider/riders.csv"), sb.toString().getBytes());
     }
 
-    public static ArrayList<Restaurant> getRidersFromFile() throws IOException{
-        ArrayList<Restaurant> riders = new ArrayList<>();
+    public static ArrayList<Rider> getRidersFromFile() throws IOException{
+        ArrayList<Rider> riders = new ArrayList<>();
 
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get("./files/rider/riders.csv"));
@@ -42,7 +42,7 @@ public class Rider {
             String name = dataInFile[1];
             String phone = dataInFile[2];
 
-            riders.add(new Restaurant(name, phone));
+            riders.add(new Rider(name, phone));
         }
         return riders;
     }

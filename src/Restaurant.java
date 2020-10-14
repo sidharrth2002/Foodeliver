@@ -55,7 +55,7 @@ public class Restaurant extends Entity {
         Files.write(Paths.get("./files/item/items.csv"), sb.toString().getBytes());
     }
 
-    public static ArrayList<Restaurant> getRestaurantsFromFile() throws IOException{
+    public static ArrayList<Restaurant> getRestaurantsFromFile() throws IOException {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
 
         // read students.csv into a list of lines.
