@@ -9,8 +9,9 @@ import java.util.List;
 public class Order {
     private Restaurant restaurant;
     private Customer customer;
+    //private Rider rider;
     private String orderStatus = "Preparing";
-    private String code;
+    private String code; //ordercode-restaurantcode-customercode-ridercode
     private String pickupType;
 
     //contains item objects chosen
@@ -21,11 +22,6 @@ public class Order {
     private static int count = 1;
 
     public Order() {}
-
-//    public Order(String restaurantName, String restaurantCode, String customerName, String customerCode, ArrayList<String> itemCodes, ArrayList<Integer> quantityOfItems, String pickupType, ArrayList<Item> itemList) {
-//
-//        this.code = "o" + count++ + "-" + restaurantCode + "-" + customerCode;
-//    }
 
     public Order(Restaurant restaurant, Customer customer, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType) {
         this.restaurant = restaurant;
@@ -58,10 +54,14 @@ public class Order {
         return total;
     }
 
-    //setters
     public String getOrderStatus() {
         return orderStatus;
     }
+
+    public String getPickupType() {
+        return pickupType;
+    }
+    //setters
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
@@ -212,6 +212,8 @@ public class Order {
         System.out.println(Item.count1);
         System.out.println(Item.count2);
         System.out.println(Item.count3);
+
+
 
 //        for (Item item : itemsList2) {
 //            item.describe();
