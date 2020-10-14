@@ -29,7 +29,7 @@ public class Order {
         this.itemsToOrder = itemsToOrder;
         this.quantityOfItems = quantityOfItems;
         this.totalPrice = calculateTotalPrice();
-
+        this.pickupType = pickupType;
         this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
     }
 
@@ -40,6 +40,7 @@ public class Order {
         this.quantityOfItems = quantityOfItems;
         this.totalPrice = calculateTotalPrice();
         this.pickupType = pickupType;
+        this.orderStatus = orderStatus;
 
         this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
     }
@@ -52,6 +53,10 @@ public class Order {
             total += (itemsToOrder.get(i).getPrice() * quantityOfItems.get(i));
         }
         return total;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getOrderStatus() {
@@ -126,6 +131,8 @@ public class Order {
 
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get("./files/order/orders.csv"));
+        System.out.println(lines.size());
+
         for (int i = 0; i < lines.size(); i++) {
             // split a line by comma
             String[] dataInFile = lines.get(i).split(",,");
@@ -156,6 +163,7 @@ public class Order {
 
             //get restaurant object based on restaurant code of order
             Restaurant restaurant = null;
+            System.out.println(restaurantList);
             for (int j = 0; j < restaurantList.size(); j++) {
                 if (restaurantList.get(j).getCode().equals(restaurantCode)) {
                     restaurant = restaurantList.get(j);
@@ -171,6 +179,9 @@ public class Order {
                     break;
                 }
             }
+            System.out.println(restaurant.getCode());
+            System.out.println(customer.getCode());
+
             Order order = new Order(restaurant, customer, itemsToOrder, quantityOfItems, pickupType, orderStatus);
             orders.add(order);
         }
@@ -203,15 +214,13 @@ public class Order {
 
     public static void main(String[] args) throws IOException {
 
-        ArrayList<Item> itemsList = Item.getItemsFromFile();
-
-        for (Item item : itemsList) {
-            item.describe();
-        }
-
-        System.out.println(Item.count1);
-        System.out.println(Item.count2);
-        System.out.println(Item.count3);
+//        for (Item item : itemsList) {
+//            item.describe();
+//        }
+//
+//        System.out.println(Item.count1);
+//        System.out.println(Item.count2);
+//        System.out.println(Item.count3);
 
 
 
