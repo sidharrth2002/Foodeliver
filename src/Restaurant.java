@@ -7,26 +7,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Restaurant extends Entity {
-    private String code;
-    private ArrayList<Order> orderHistory = new ArrayList<>();
-
+    //records order history for each restaurant
     public Restaurant() {}
 
     public Restaurant(String code, String name, String address) {
         super(name, address);
         this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public ArrayList<Order> getOrderHistory() {
-        return orderHistory;
     }
 
     public void addItem(ArrayList<Item> items, String name, double price, String description) {
@@ -96,8 +82,6 @@ public class Restaurant extends Entity {
                     restaurants.get(2).getOrderHistory().add(orders.get(i));
                 }
             }
-
-            System.out.println(restaurants.get(0).getOrderHistory());
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -77,6 +77,9 @@ public class Order {
         System.out.println("=======================================================================");
         System.out.println("Customer making the Order: " + customer.getName());
         System.out.println("Restaurant taking the Order: " + restaurant.getName());
+//        if (pickupType.equals("Delivery")) {
+//            System.out.println("Rider taking the Order: " + rider.getName());
+//        }
         System.out.println("The total price: " + totalPrice);
         System.out.println("The status of this order is: " + orderStatus);
         System.out.println("The items are: ");
