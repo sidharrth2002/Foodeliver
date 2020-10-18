@@ -151,7 +151,14 @@ public class Customer extends Entity {
                 } else if (orders.get(i).getCode().substring(3,5).equals("r3")) {
                     restaurants.get(2).getOrderHistory().add(orders.get(i));
                 }
+
+                for (int j = 0; j < customers.size(); j++) {
+                    if (customers.get(j).getCode().equals(orders.get(i).getCode().substring(6, 8))) {
+                        customers.get(j).addOrder(orders.get(i));
+                    }
+                }
             }
+
 
             System.out.println(restaurants.get(0).getCode());
 
@@ -394,7 +401,6 @@ public class Customer extends Entity {
             }else{
                 //print order history
                 if (customer.getOrderHistory().size() == 0) {
-
                     System.out.println("There are no past orders.");
                     System.out.println("Let's go back to main menu.");
                 } else {
