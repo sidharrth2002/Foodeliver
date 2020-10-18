@@ -1,10 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Restaurant extends Entity {
     //records order history for each restaurant
@@ -65,21 +62,22 @@ public class Restaurant extends Entity {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         ArrayList<Customer> customers = new ArrayList<>();
         ArrayList<Order> orders = new ArrayList<>();
+        LinkedList<Rider> riders = new LinkedList<>();
 
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
             items= Item.getItemsFromFile(restaurants);
             customers = Customer.getCustomersFromFile();
-            orders = Order.getOrdersFromFile(items, restaurants, customers);
-
+            riders = Rider.getRidersFromFile();
+            orders = Order.getOrdersFromFile(items, restaurants, customers, riders);
             //add to each restaurant's order histories
             for (int i = 0; i < orders.size(); i++) {
                 if (orders.get(i).getCode().substring(3,5).equals("r1")) {
-                    restaurants.get(0).getOrderHistory().add(orders.get(i));
+                    restaurants.get(0).addOrder(orders.get(i));
                 } else if (orders.get(i).getCode().substring(3,5).equals("r2")) {
-                    restaurants.get(1).getOrderHistory().add(orders.get(i));
+                    restaurants.get(1).addOrder(orders.get(i));
                 } else if (orders.get(i).getCode().substring(3,5).equals("r3")) {
-                    restaurants.get(2).getOrderHistory().add(orders.get(i));
+                    restaurants.get(2).addOrder(orders.get(i));
                 }
             }
 
@@ -351,7 +349,8 @@ public class Restaurant extends Entity {
                             System.out.println("Please choose new status:");
                             System.out.println("1- Preparing");
                             System.out.println("2- Ready");
-                            System.out.println("3- Collected");
+                            System.out.println("3- Delivering");
+                            System.out.println("4- Collected");
                             System.out.println("================================");
                             System.out.println("Input:");
                             String orderStatus = input.nextLine();
@@ -374,6 +373,13 @@ public class Restaurant extends Entity {
 
                                 // collected
                             } else if (orderStatus.equals("3")) {
+                                loopcheck2 = true;
+                                String newStatus = "Delivering";
+                                restaurant.setOrderStatus(orderIndex, newStatus);
+                                System.out.println("===================");
+                                System.out.println("Order status updated successfully");
+
+                            } else if (orderStatus.equals("4")) {
                                 loopcheck2 = true;
                                 String newStatus = "Collected";
                                 restaurant.setOrderStatus(orderIndex, newStatus);

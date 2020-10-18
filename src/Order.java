@@ -4,12 +4,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Order {
     private Restaurant restaurant;
     private Customer customer;
-    //private Rider rider;
+    public Rider rider;
     private String orderStatus = "Preparing";
     private String code; //ordercode-restaurantcode-customercode-ridercode
     private String pickupType;
@@ -23,24 +24,28 @@ public class Order {
 
     public Order() {}
 
-    public Order(Restaurant restaurant, Customer customer, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType) {
-        this.restaurant = restaurant;
-        this.customer = customer;
-        this.itemsToOrder = itemsToOrder;
-        this.quantityOfItems = quantityOfItems;
-        this.totalPrice = calculateTotalPrice();
-        this.pickupType = pickupType;
-        this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
-    }
-
+    //used for takeaway
     public Order(Restaurant restaurant, Customer customer, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
         this.restaurant = restaurant;
         this.customer = customer;
         this.itemsToOrder = itemsToOrder;
         this.quantityOfItems = quantityOfItems;
         this.totalPrice = calculateTotalPrice();
-        this.pickupType = pickupType;
         this.orderStatus = orderStatus;
+        this.pickupType = pickupType;
+        this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
+    }
+
+    //used for delivery
+    public Order(Restaurant restaurant, Customer customer, Rider rider, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
+        this.restaurant = restaurant;
+        this.customer = customer;
+        this.rider = rider;
+        this.itemsToOrder = itemsToOrder;
+        this.quantityOfItems = quantityOfItems;
+        this.totalPrice = calculateTotalPrice();
+        this.orderStatus = orderStatus;
+        this.pickupType = pickupType;
 
         this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
     }
@@ -77,9 +82,9 @@ public class Order {
         System.out.println("=======================================================================");
         System.out.println("Customer making the Order: " + customer.getName());
         System.out.println("Restaurant taking the Order: " + restaurant.getName());
-//        if (pickupType.equals("Delivery")) {
-//            System.out.println("Rider taking the Order: " + rider.getName());
-//        }
+       if (pickupType.equals("Delivery")) {
+           System.out.println("Rider taking the Order: " + rider.getName() + " his phone number: " + rider.getPhone());
+       }
         System.out.println("The total price: " + totalPrice);
         System.out.println("The status of this order is: " + orderStatus);
         System.out.println("The items are: ");
@@ -96,7 +101,13 @@ public class Order {
     public String toCSVString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(code).append(",,").append(restaurant.getCode()).append(",,").append(customer.getCode()).append(",,").append(orderStatus).append(",,").append(pickupType);
+        sb.append(code).append(",,").append(restaurant.getCode()).append(",,").append(customer.getCode()).append(",,");
+
+        if (pickupType.equals("Delivery")) {
+            sb.append(rider.getCode()).append(",,").append(orderStatus).append(",,").append(pickupType);
+        } else {
+            sb.append("d0").append(",,").append(orderStatus).append(",,").append(pickupType);
+        }
 
         StringBuilder sb2 = new StringBuilder();
         for (int i = 0; i < itemsToOrder.size(); i++) {
@@ -129,10 +140,10 @@ public class Order {
         Files.write(Paths.get("./files/order/orders.csv"), sb.toString().getBytes());
     }
 
-    public static ArrayList<Order> getOrdersFromFile(ArrayList<Item> itemList, ArrayList<Restaurant> restaurantList, ArrayList<Customer> customerList) throws IOException {
+    public static ArrayList<Order> getOrdersFromFile(ArrayList<Item> itemList, ArrayList<Restaurant> restaurantList, ArrayList<Customer> customerList, LinkedList<Rider> riderList) throws IOException {
         ArrayList<Order> orders = new ArrayList<>();
 
-        // read students.csv into a list of lines.
+        //read orders.csv from file
         List<String> lines = Files.readAllLines(Paths.get("./files/order/orders.csv"));
         System.out.println(lines.size());
 
@@ -142,13 +153,15 @@ public class Order {
             String code = dataInFile[0];
             String restaurantCode = dataInFile[1];
             String customerCode = dataInFile[2];
-            String orderStatus = dataInFile[3];
-            String pickupType = dataInFile[4];
-            String[] items = dataInFile[5].split(",");
+            String riderCode = dataInFile[3];
+
+            String orderStatus = dataInFile[4];
+            String pickupType = dataInFile[5];
+            String[] items = dataInFile[6].split(",");
 
             ArrayList<Integer> quantityOfItems = new ArrayList<>();
             //store quantity of items
-            String[] quantity = dataInFile[6].split(",");
+            String[] quantity = dataInFile[7].split(",");
             for (String s : quantity) {
                 quantityOfItems.add(Integer.parseInt(s));
             }
@@ -182,103 +195,27 @@ public class Order {
                     break;
                 }
             }
-            System.out.println(restaurant.getCode());
-            System.out.println(customer.getCode());
 
-            Order order = new Order(restaurant, customer, itemsToOrder, quantityOfItems, pickupType, orderStatus);
-            orders.add(order);
+//            System.out.println(restaurant.getCode());
+//            System.out.println(customer.getCode());
+//            System.out.println(rider.getCode());
+
+            if (pickupType.equals("Delivery")) {
+                Rider rider = null;
+                for (int j = 0; j < riderList.size(); j++) {
+                    if (riderList.get(j).getCode().equals(riderCode)) {
+                        rider = riderList.get(j);
+                        break;
+                    }
+                }
+
+                Order order = new Order(restaurant, customer, rider, itemsToOrder, quantityOfItems, pickupType, orderStatus);
+                orders.add(order);
+            } else {
+                Order order = new Order(restaurant, customer, itemsToOrder, quantityOfItems, pickupType, orderStatus);
+                orders.add(order);
+            }
         }
         return orders;
-    }
-
-    //based on the item code given, will find and return Item object
-//    public static Item getItemFromItemCode(String itemCode, ArrayList<Item> itemList) {
-//        for (int i = 0; i < itemList.size(); i++) { ;
-////            System.out.println(itemList.get(i).getCode());
-////            System.out.println(Item.count1);
-////            System.out.println(Item.count2);
-////            System.out.println(Item.count3);
-//            //since everytime a new item is created, the static count increases, have to decrease to make sure it doesn't mess about codes
-////            if (itemList.get(i).getCode().substring(0, 2).equals("r1")) {
-////                Item.count1 -= 1;
-////            } else if (itemList.get(i).getCode().substring(0,2).equals("r2")) {
-////                Item.count2 -= 1;
-////            } else {
-////                Item.count3 -= 1;
-////            }
-//
-////            System.out.println(item.getCode());
-//            if (itemList.get(i).getCode().equals(itemCode)) {
-//                return itemList.get(i);
-//            }
-//        }
-//        return null;
-//    }
-
-    public static void main(String[] args) throws IOException {
-
-//        for (Item item : itemsList) {
-//            item.describe();
-//        }
-//
-//        System.out.println(Item.count1);
-//        System.out.println(Item.count2);
-//        System.out.println(Item.count3);
-
-
-
-//        for (Item item : itemsList2) {
-//            item.describe();
-//        }
-//
-//        System.out.println(Item.count1);
-//        System.out.println(Item.count2);
-//        System.out.println(Item.count3);
-
-//        try {
-////            Item.count1 = Item.count2 = Item.count3 = 0;
-//            ArrayList<Order> orders2 = getOrdersFromFile(itemsList);
-//            System.out.println(orders2.get(1).quantityOfItems);
-//            System.out.println(orders2.get(2).itemsToOrder.get(1));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println(Item.count1);
-//        System.out.println(Item.count2);
-//        System.out.println(Item.count3);
-
-//        System.out.println("Count after fetching from file");
-
-//
-//        ArrayList<Order> orders = new ArrayList<>();
-//        ArrayList<String> itemsToOrder = new ArrayList<>(Arrays.asList("r3-1", "r2-1", "r3-2"));
-//        ArrayList<Integer> quantityOfItems = new ArrayList<>(Arrays.asList(1, 3, 3));
-
-//        orders.add(new Order("KFC", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery", itemsList));
-//        orders.add(new Order("McD", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Takeaway",itemsList));
-//        orders.add(new Order("Burger King", "r1", "Sid", "c1", itemsToOrder, quantityOfItems, "Delivery", itemsList));
-
-//        System.out.println(Item.count1);
-//        System.out.println(Item.count2);
-//        System.out.println(Item.count3);
-//
-//        //
-//
-//        try {
-//            saveOrdersToFile(orders);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println("final");
-//        System.out.println(Item.count1);
-//        System.out.println(Item.count2);
-//        System.out.println(Item.count3);
-
-
-        //
-//        System.out.println("final");
-
     }
 }
