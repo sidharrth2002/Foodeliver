@@ -145,7 +145,6 @@ public class Order {
 
         //read orders.csv from file
         List<String> lines = Files.readAllLines(Paths.get("./files/order/orders.csv"));
-        System.out.println(lines.size());
 
         for (int i = 0; i < lines.size(); i++) {
             // split a line by comma
@@ -179,7 +178,6 @@ public class Order {
 
             //get restaurant object based on restaurant code of order
             Restaurant restaurant = null;
-            System.out.println(restaurantList);
             for (int j = 0; j < restaurantList.size(); j++) {
                 if (restaurantList.get(j).getCode().equals(restaurantCode)) {
                     restaurant = restaurantList.get(j);

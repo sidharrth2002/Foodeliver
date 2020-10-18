@@ -23,6 +23,10 @@ public class Customer extends Entity {
         return phone;
     }
 
+    public String toString() {
+        return "Customer Code: " + code + "\nCustomer Name: " + name + "\nCustomer Phone: " + phone + "\nOrder Count: " + getOrderHistory().size();
+    }
+
     public String toCSVString() {
         return name + ",," + address + ",," + phone;
     }
@@ -226,83 +230,20 @@ public class Customer extends Entity {
             }
 
 
-        // menu 1  for customer -------------------------
-        System.out.println("================================");
-        System.out.println("1- Show Menu sorted Alphabetically To Order");
-        System.out.println("2- Show Menu sorted by Price to Order");
-        System.out.println("3- See Order History");
-        System.out.println("================================");
-        System.out.println("Input:");
-        String inputC3 = input.nextLine();
+            // menu 1  for customer -------------------------
+            System.out.println("================================");
+            System.out.println("1- Show Menu sorted Alphabetically To Order");
+            System.out.println("2- Show Menu sorted by Price to Order");
+            System.out.println("3- See Order History");
+            System.out.println("================================");
+            System.out.println("Input:");
+            String inputC3 = input.nextLine();
 
 
-        if (inputC3.equals("1") || inputC3.equals("2")) {
-            // created to sort items
-            ArrayList<Item> itemsToSort = new ArrayList<>(items);
+            if (inputC3.equals("1") || inputC3.equals("2")) {
+                // created to sort items
+                ArrayList<Item> itemsToSort = new ArrayList<>(items);
 
-            if (inputC3.equals("1")) {
-                System.out.println("sorted alphabetically");
-                sortAlphabetically(itemsToSort);
-            } else if (inputC3.equals("2")) {
-                System.out.println("sorted by price");
-                sortByPrice(itemsToSort);
-            }
-            // adding order
-            ArrayList<Item> itemsToOrder = new ArrayList<>();
-            ArrayList<Integer> quantityOfItems = new ArrayList<>();
-
-            // adding items to cart
-            System.out.println("========================================");
-            System.out.println("Please enter item index to add to cart. Here's an example: ");
-            System.out.println("----------------");
-            System.out.println("Item #0:  ");
-            System.out.println("Name: Juice, Price: 5.0, Description: Tasty juice, Item Code: r3-1");
-            System.out.println();
-            System.out.println("Input: ");
-            System.out.println("0");
-            System.out.println("Juice is added to cart");
-            System.out.println("========================================");
-
-            Item foodItem = null;
-            String inputC4, inputC5;
-            boolean itemLoopCheck = false;
-
-            //error-handling loop
-            do {
-                try {
-                    System.out.println("Input:");
-                    inputC4 = input.nextLine();
-                    foodItem = itemsToSort.get(Integer.parseInt(inputC4));
-                    System.out.println("\nEnter the quantity of this item that you want to order:");
-                    inputC5 = input.nextLine();
-                    // adding item and quantity
-                    quantityOfItems.add(Integer.parseInt(inputC5));
-                    itemsToOrder.add(foodItem);
-                    itemLoopCheck = true;
-                } catch(NumberFormatException e) {
-                    System.out.println("You should have entered a valid number. Try the whole thing again.");
-                } catch(IndexOutOfBoundsException e) {
-                    System.out.println("Out of bounds. Try again.");
-                } catch(Exception e) {
-                    System.out.println("Invalid input.");
-                }
-            } while (!itemLoopCheck);
-
-
-            String currentRestaurantID = foodItem.getCode().substring(0, 2);
-
-
-            System.out.println("=============================================");
-            System.out.println("Do you want to add more items?");
-            System.out.println("Enter 1 to add more and anything else to stop:");
-            String inputC6 = input.nextLine();
-            boolean continueAdding = false;
-            if (inputC6.equals("1")) {
-                continueAdding = true;
-            }
-
-            while (continueAdding) {
-                // same sort as previous
                 if (inputC3.equals("1")) {
                     System.out.println("sorted alphabetically");
                     sortAlphabetically(itemsToSort);
@@ -310,149 +251,191 @@ public class Customer extends Entity {
                     System.out.println("sorted by price");
                     sortByPrice(itemsToSort);
                 }
+                // adding order
+                ArrayList<Item> itemsToOrder = new ArrayList<>();
+                ArrayList<Integer> quantityOfItems = new ArrayList<>();
 
+                // adding items to cart
                 System.out.println("========================================");
-                System.out.println("Please enter item index to add to cart");
+                System.out.println("Please enter item index to add to cart. Here's an example: ");
+                System.out.println("----------------");
+                System.out.println("Item #0:  ");
+                System.out.println("Name: Juice, Price: 5.0, Description: Tasty juice, Item Code: r3-1");
+                System.out.println();
+                System.out.println("Input: ");
+                System.out.println("0");
+                System.out.println("Juice is added to cart");
                 System.out.println("========================================");
 
-                boolean itemRepeatLoopCheck = false;
+                Item foodItem = null;
+                String inputC4, inputC5;
+                boolean itemLoopCheck = false;
+
+                //error-handling loop
                 do {
                     try {
                         System.out.println("Input:");
                         inputC4 = input.nextLine();
                         foodItem = itemsToSort.get(Integer.parseInt(inputC4));
-
-                        // making sure that all items added to cart are from same restaurant
-                        if (!(foodItem.getCode().substring(0, 2).equals(currentRestaurantID))) {
-                            System.out.println("You cannot choose from different restaurants. Try again: ");
-                            continue;
-                        }
-
-                        //checks to see if that item is already in the order
-                        if (itemsToOrder.contains(foodItem)) {
-                            System.out.println("This item is already in your cart. Try again.");
-                            continue;
-                        }
-
-                        // item quantity
-                        System.out.println("\nEnter the quantity of this item that you want to order: ");
+                        System.out.println("\nEnter the quantity of this item that you want to order:");
                         inputC5 = input.nextLine();
-
+                        // adding item and quantity
                         quantityOfItems.add(Integer.parseInt(inputC5));
                         itemsToOrder.add(foodItem);
-                        itemRepeatLoopCheck = true;
-
-                        // user input check
+                        itemLoopCheck = true;
                     } catch(NumberFormatException e) {
                         System.out.println("You should have entered a valid number. Try the whole thing again.");
                     } catch(IndexOutOfBoundsException e) {
                         System.out.println("Out of bounds. Try again.");
+                    } catch(Exception e) {
+                        System.out.println("Invalid input.");
                     }
-                } while (!itemRepeatLoopCheck);
+                } while (!itemLoopCheck);
 
 
-                System.out.println("Enter 1 to add more and anything else to stop.");
-                inputC6 = input.nextLine();
+                String currentRestaurantID = foodItem.getCode().substring(0, 2);
 
-                if (!(inputC6.equals("1"))) {
-                    continueAdding = false;
+
+                System.out.println("=============================================");
+                System.out.println("Do you want to add more items?");
+                System.out.println("Enter 1 to add more and anything else to stop:");
+                String inputC6 = input.nextLine();
+                boolean continueAdding = false;
+                if (inputC6.equals("1")) {
+                    continueAdding = true;
                 }
-            }
 
-            // pickup type
-            System.out.println("Please select Order pickup type.");
-            System.out.println("Select 1 - for Self Pickup , anything else to Delivery ");
-            pickupType = input.nextLine();
+                while (continueAdding) {
+                    // same sort as previous
+                    if (inputC3.equals("1")) {
+                        System.out.println("sorted alphabetically");
+                        sortAlphabetically(itemsToSort);
+                    } else if (inputC3.equals("2")) {
+                        System.out.println("sorted by price");
+                        sortByPrice(itemsToSort);
+                    }
 
-            if (pickupType.equals("1")) {
-                pickupType ="Self-pickup";
-            } else {
-                pickupType ="Delivery";
-            }
+                    System.out.println("========================================");
+                    System.out.println("Please enter item index to add to cart");
+                    System.out.println("========================================");
+
+                    boolean itemRepeatLoopCheck = false;
+                    do {
+                        try {
+                            System.out.println("Input:");
+                            inputC4 = input.nextLine();
+                            foodItem = itemsToSort.get(Integer.parseInt(inputC4));
+
+                            // making sure that all items added to cart are from same restaurant
+                            if (!(foodItem.getCode().substring(0, 2).equals(currentRestaurantID))) {
+                                System.out.println("You cannot choose from different restaurants. Try again: ");
+                                continue;
+                            }
+
+                            //checks to see if that item is already in the order
+                            if (itemsToOrder.contains(foodItem)) {
+                                System.out.println("This item is already in your cart. Try again.");
+                                continue;
+                            }
+
+                            // item quantity
+                            System.out.println("\nEnter the quantity of this item that you want to order: ");
+                            inputC5 = input.nextLine();
+
+                            quantityOfItems.add(Integer.parseInt(inputC5));
+                            itemsToOrder.add(foodItem);
+                            itemRepeatLoopCheck = true;
+
+                            // user input check
+                        } catch(NumberFormatException e) {
+                            System.out.println("You should have entered a valid number. Try the whole thing again.");
+                        } catch(IndexOutOfBoundsException e) {
+                            System.out.println("Out of bounds. Try again.");
+                        }
+                    } while (!itemRepeatLoopCheck);
 
 
-            // setting restaurant id
-            if (currentRestaurantID.equals("r1")) {
-                restaurant = restaurants.get(0);
-            } else if (currentRestaurantID.equals("r2")) {
-                restaurant = restaurants.get(1);
-            } else {
-                restaurant = restaurants.get(2);
-            }
+                    System.out.println("Enter 1 to add more and anything else to stop.");
+                    inputC6 = input.nextLine();
 
-
-            makeOrder(restaurant , customer , riders , itemsToOrder , quantityOfItems , pickupType);
-
-            System.out.println("======================================================================");
-            System.out.println("Your order has been made successfully. Please check your order history for more updates.");
-
-
-        }else{
-            //print order history
-            if (customer.getOrderHistory().size() == 0) {
-
-                System.out.println("There are no past orders.");
-                System.out.println("Let's go back to main menu.");
-            } else {
-                //loops through customer's order history and prints
-                for (int i = 0; i < customer.getOrderHistory().size(); i++) {
-                    System.out.println("Order #" + i);
-                    customer.getOrderHistory().get(i).describe();
-                    //if ready to be collected, inform customer
-                    if (customer.getOrderHistory().get(i).getOrderStatus().equals("Ready")) {
-                        System.out.println("THIS ORDER IS READY TO BE COLLECTED.");
+                    if (!(inputC6.equals("1"))) {
+                        continueAdding = false;
                     }
                 }
+
+                // pickup type
+                System.out.println("Please select Order pickup type.");
+                System.out.println("Select 1 - for Self Pickup , anything else to Delivery ");
+                pickupType = input.nextLine();
+
+                if (pickupType.equals("1")) {
+                    pickupType ="Self-pickup";
+                } else {
+                    pickupType ="Delivery";
+                }
+
+
+                // setting restaurant id
+                if (currentRestaurantID.equals("r1")) {
+                    restaurant = restaurants.get(0);
+                } else if (currentRestaurantID.equals("r2")) {
+                    restaurant = restaurants.get(1);
+                } else {
+                    restaurant = restaurants.get(2);
+                }
+
+
+                makeOrder(restaurant , customer , riders , itemsToOrder , quantityOfItems , pickupType);
+
+                System.out.println("======================================================================");
+                System.out.println("Your order has been made successfully. Please check your order history for more updates.");
+
+
+            }else{
+                //print order history
+                if (customer.getOrderHistory().size() == 0) {
+
+                    System.out.println("There are no past orders.");
+                    System.out.println("Let's go back to main menu.");
+                } else {
+                    //loops through customer's order history and prints
+                    for (int i = 0; i < customer.getOrderHistory().size(); i++) {
+                        System.out.println("Order #" + i);
+                        customer.getOrderHistory().get(i).describe();
+                        //if ready to be collected, inform customer
+                        if (customer.getOrderHistory().get(i).getOrderStatus().equals("Ready")) {
+                            System.out.println("THIS ORDER IS READY TO BE COLLECTED.");
+                        }
+                    }
+                }
+
             }
 
-        }
+            System.out.println();
+            System.out.println("Enter 1 to go back to main menu, where you can change to different customer");
+            System.out.println("Enter anything else to terminate program.");
+            System.out.println("Input:");
+            String terminateFlag1 = input.nextLine();
 
-        System.out.println();
-        System.out.println("Enter 1 to go back to main menu, where you can change to different customer");
-        System.out.println("Enter anything else to terminate program.");
-        System.out.println("Input:");
-        String terminateFlag1 = input.nextLine();
+            if (terminateFlag1.equals("1")) {
+                continue;
+            } else {
+                try {
+                    saveCustomersToFile(customers);
+                    orders.clear();
+                    orders.addAll(restaurants.get(0).getOrderHistory());
+                    orders.addAll(restaurants.get(1).getOrderHistory());
+                    orders.addAll(restaurants.get(2).getOrderHistory());
+                    Order.saveOrdersToFile(orders);
+                    Rider.saveRidersToFile(riders);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-        if (terminateFlag1.equals("1")) {
-            continue;
-        } else {
-            try {
-                saveCustomersToFile(customers);
-                orders.clear();
-                orders.addAll(restaurants.get(0).getOrderHistory());
-                orders.addAll(restaurants.get(1).getOrderHistory());
-                orders.addAll(restaurants.get(2).getOrderHistory());
-                Order.saveOrdersToFile(orders);
-                Rider.saveRidersToFile(riders);
-            } catch (IOException e) {
-                e.printStackTrace();
+                System.exit(0);
             }
 
-            System.exit(0);
-        }
-
-    } while ( true );
-
-
-
-//        ArrayList<Customer> customers = new ArrayList<>();
-//        customers.add(new Customer("Sid", "2, Jalan Villa", "013456789"));
-//        customers.add(new Customer("Ahmed", "4, Jalan Villa", "435345"));
-//        customers.add(new Customer("John", "5, Jalan Villa", "435455676"));
-//
-//        try {
-//            saveCustomersToFile(customers);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            ArrayList<Customer> customers2 = getCustomersFromFile();
-//            System.out.println(customers2.get(1).getAddress());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+        } while ( true );
 
 
 

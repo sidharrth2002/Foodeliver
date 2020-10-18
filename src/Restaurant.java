@@ -21,6 +21,10 @@ public class Restaurant extends Entity {
         orderHistory.get(orderIndex).setOrderStatus(newStatus);
     }
 
+    public String toString() {
+        return "Restaurant Code: " + code + "\nRestaurant Name: " + name + "\nRestaurant Address: " + address + "\nOrder Count: " + getOrderHistory().size();
+    }
+
     private String toCSVString() {
         return code + ",," + name + ",," + address;
     }
@@ -306,7 +310,7 @@ public class Restaurant extends Entity {
                 if (restaurant.getOrderHistory().size() != 0) {
                     for (int i = 0; i < restaurant.getOrderHistory().size(); i++) {
                         //if the order has already been collected, don't display under current orders
-                        if (restaurant.getOrderHistory().get(i).getOrderStatus().equals("Collected")) {
+                        if (restaurant.getOrderHistory().get(i).getOrderStatus().equals("Collected") || restaurant.getOrderHistory().get(i).getOrderStatus().equals("Delivered")) {
                             continue;
                         }
                         System.out.println("Order #" + i);
