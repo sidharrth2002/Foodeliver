@@ -1,8 +1,5 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 public abstract class Admin {
     public static void main(String[] args) {
@@ -13,7 +10,7 @@ public abstract class Admin {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         ArrayList<Customer> customers = new ArrayList<>();
         ArrayList<Order> orders = new ArrayList<>();
-        LinkedList<Rider> riders = new LinkedList<>();
+        Cqueue<Rider> riders = new Cqueue<>();
 
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
@@ -54,13 +51,13 @@ public abstract class Admin {
 
             System.out.println("Welcome to Foodeliver Admin Interface");
             System.out.println("=======================");
-            System.out.println("=======================");
             System.out.println("What do you want to do?");
             System.out.println("1- Add New Rider to System");
             System.out.println("2- View Rider Queue");
             System.out.println("3- View all consolidated order histories");
             System.out.println("4- View system statistics");
-            System.out.println("Entering anything else will automatically go to option 4");
+            System.out.println("Note: Any other inputs will go to option 4");
+            System.out.println("=======================");
             String inputa1 = input.nextLine();
 
             if (inputa1.equals("1")) {
@@ -75,45 +72,54 @@ public abstract class Admin {
                 System.out.println("Here is the current queue of riders: ");
                 for (Rider rider : riders) {
                     System.out.println(rider);
-                    System.out.println();
+                    System.out.println("-----------------------------------");
                 }
             } else if (inputa1.equals("3")) {
                 System.out.println("Here is the list of consolidated orders: ");
                 for (Order order : orders) {
+                    System.out.println();
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     order.describe();
+                    System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                     System.out.println();
                 }
             } else {
+                System.out.println();
+                System.out.println();
+                System.out.println("==========================================");
                 System.out.println("RIDERS SORTED BY HIGHEST DELIVERY COUNT");
                 //making copy of riders list so as to not mess up the order of the queue
-                LinkedList<Rider> ridersCopy = new LinkedList<>(riders);
+                LinkedList<Rider> ridersCopy = new LinkedList<>();
+                for (Rider rider : riders) {
+                    ridersCopy.add(rider);
+                }
                 //sorts by comparable
                 Collections.sort(ridersCopy);
                 for (Rider rider : ridersCopy) {
                     System.out.println(rider);
-                    System.out.println();
+                    System.out.println("-----------------------------------");
                 }
-
+                System.out.println();
+                System.out.println();
                 System.out.println("==========================================");
-
                 System.out.println("RESTAURANTS SORTED BY HIGHEST ORDER COUNT");
                 ArrayList<Restaurant> restaurantsCopy = new ArrayList<>(restaurants);
                 Collections.sort(restaurantsCopy);
 
                 for (Restaurant restaurant : restaurantsCopy) {
                     System.out.println(restaurant);
-                    System.out.println();
+                    System.out.println("-----------------------------------");
                 }
-
+                System.out.println();
+                System.out.println();
                 System.out.println("==========================================");
-
                 System.out.println("CUSTOMERS SORTED BY HIGHEST ORDER COUNT");
                 ArrayList<Customer> customersCopy = new ArrayList<>(customers);
                 Collections.sort(customersCopy);
 
                 for (Customer customer : customersCopy) {
                     System.out.println(customer);
-                    System.out.println();
+                    System.out.println("-----------------------------------");
                 }
             }
 

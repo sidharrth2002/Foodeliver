@@ -17,7 +17,7 @@ public class Rider extends Entity {
         return phone;
     }
 
-    //added toString
+
     public String toString() {
         return "Rider Code: " + code + "\nRider Name " + name + "\nRider Phone " + phone + "\nOrder Count " + this.getOrderHistory().size();
     }
@@ -32,7 +32,7 @@ public class Rider extends Entity {
     }
 
     //saving Rider data to file
-    public static void saveRidersToFile(LinkedList<Rider> riders) throws IOException {
+    public static void saveRidersToFile(Cqueue<Rider> riders) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < riders.size(); i++) {
             sb.append(riders.get(i).toCSVString() + "\n");
@@ -40,8 +40,8 @@ public class Rider extends Entity {
         Files.write(Paths.get("./files/rider/riders.csv"), sb.toString().getBytes());
     }
 
-    public static LinkedList<Rider> getRidersFromFile() throws IOException{
-        LinkedList<Rider> riders = new LinkedList<>();
+    public static Cqueue<Rider> getRidersFromFile() throws IOException{
+        Cqueue<Rider> riders = new Cqueue<>();
 
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get("./files/rider/riders.csv"));
@@ -64,7 +64,7 @@ public class Rider extends Entity {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         ArrayList<Customer> customers = new ArrayList<>();
         ArrayList<Order> orders = new ArrayList<>();
-        LinkedList<Rider> riders = new LinkedList<>();
+        Cqueue<Rider> riders = new Cqueue<>();
 
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
@@ -158,8 +158,12 @@ public class Rider extends Entity {
                 if (rider.getOrderHistory().size() != 0) {
                     for (int i =0 ; i< rider.getOrderHistory().size(); i++) {
                         if (rider.getOrderHistory().get(i).getOrderStatus().equals("Delivering")) {
+                            System.out.println();
+                            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                             System.out.println("Order #" + i);
                             rider.getOrderHistory().get(i).describe();
+                            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                            System.out.println();
                             countCurrentOrders += 1;
                         }
                     }
@@ -212,8 +216,14 @@ public class Rider extends Entity {
                     int i = 0;
                     for (Order order : rider.getOrderHistory()) {
 //                        if (rider.getOrderHistory().get(i).getOrderStatus().equals("Delivered")) {
-                            System.out.println("Order #" + i);
+                        System.out.println();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println("Order #" + i);
                             order.describe();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println();
+
+
 //                        }
                         i++;
                     }

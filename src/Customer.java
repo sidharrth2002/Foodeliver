@@ -72,7 +72,7 @@ public class Customer extends Entity {
 
         //prints sorted items
         for (int i = 0; i < itemsToSort.size(); i++) {
-            System.out.println("Item #" + i + ": ");
+            System.out.print("Item #" + i + ": ");
             itemsToSort.get(i).describe();
             System.out.println();
         }
@@ -95,20 +95,20 @@ public class Customer extends Entity {
         }
 
         for (int i = 0; i < itemsToSort.size(); i++) {
-            System.out.println("Item #" + i + ": ");
+            System.out.print("Item #" + i + ": ");
             itemsToSort.get(i).describe();
             System.out.println();
         }
     }
 
     //method creates an order and passes it to both restaurant and customer objects
-    private static void makeOrder(Restaurant restaurant, Customer customer, LinkedList<Rider> riders, ArrayList <Item> itemsToOrder, ArrayList <Integer> quantityOfItems, String pickupType) {
+    private static void makeOrder(Restaurant restaurant, Customer customer, Cqueue<Rider> riders, ArrayList <Item> itemsToOrder, ArrayList <Integer> quantityOfItems, String pickupType) {
         // make new order and pass it to 3 user types
         if (pickupType.equals("Delivery")) {
             // riders turn
-            Rider crider = riders.getFirst(); // current rider
+            Rider crider = riders.getHead(); // current rider
             riders.removeFirst(); // delete current rider
-            riders.addLast(crider); // add current rider to the end
+            riders.add(crider); // add current rider to the end
             Order newOrder = new Order(restaurant, customer, crider, itemsToOrder, quantityOfItems, pickupType, "Preparing");
             crider.addOrder(newOrder);
             restaurant.addOrder(newOrder);
@@ -133,7 +133,7 @@ public class Customer extends Entity {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         ArrayList<Customer> customers = new ArrayList<>();
         ArrayList<Order> orders = new ArrayList<>();
-        LinkedList<Rider> riders = new LinkedList<>();
+        Cqueue<Rider> riders = new Cqueue<>();
 
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
@@ -252,17 +252,27 @@ public class Customer extends Entity {
                 ArrayList<Item> itemsToSort = new ArrayList<>(items);
 
                 if (inputC3.equals("1")) {
-                    System.out.println("sorted alphabetically");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("Sorted Alphabetically:");
+                    System.out.println("+++++++++++++++++++++++++++++++++++");
                     sortAlphabetically(itemsToSort);
+                    System.out.println("+++++++++++++++++++++++++++++++++++");
                 } else if (inputC3.equals("2")) {
-                    System.out.println("sorted by price");
+                    System.out.println();
+                    System.out.println();
+                    System.out.println("Sorted by Price:");
+                    System.out.println("+++++++++++++++++++++++++++++++++++");
                     sortByPrice(itemsToSort);
+                    System.out.println("+++++++++++++++++++++++++++++++++++");
                 }
                 // adding order
                 ArrayList<Item> itemsToOrder = new ArrayList<>();
                 ArrayList<Integer> quantityOfItems = new ArrayList<>();
 
                 // adding items to cart
+                System.out.println();
+                System.out.println();
                 System.out.println("========================================");
                 System.out.println("Please enter item index to add to cart. Here's an example: ");
                 System.out.println("----------------");
@@ -406,12 +416,16 @@ public class Customer extends Entity {
                 } else {
                     //loops through customer's order history and prints
                     for (int i = 0; i < customer.getOrderHistory().size(); i++) {
+                        System.out.println();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Order #" + i);
                         customer.getOrderHistory().get(i).describe();
                         //if ready to be collected, inform customer
                         if (customer.getOrderHistory().get(i).getOrderStatus().equals("Ready")) {
                             System.out.println("THIS ORDER IS READY TO BE COLLECTED.");
                         }
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println();
                     }
                 }
 

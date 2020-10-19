@@ -71,12 +71,12 @@ public class Item {
     // Function called whenever an item needs to be described
     // prints out the fields in a format
     public void describe() {
-        System.out.println("----------------------------------" );
-        System.out.println("Item Name: " + name);
+        System.out.print(restaurant.getName() + " \t " + name + " \t " + description + " \t " + price );
+        /*System.out.println("Item Name: " + name);
         System.out.println("Item Description: " + description);
         System.out.println("Item Price: " + price);
-        System.out.println("Restaurant Serving this Item: " + restaurant.getName());
-        System.out.println("----------------------------------" );
+        System.out.println("Restaurant Serving this Item: " + restaurant.getName());*/
+        System.out.print("\n-----------------------------------------------------------------------------------------------\n " );
     }
 
     public String toCSVString() {

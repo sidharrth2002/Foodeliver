@@ -66,7 +66,7 @@ public class Restaurant extends Entity {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
         ArrayList<Customer> customers = new ArrayList<>();
         ArrayList<Order> orders = new ArrayList<>();
-        LinkedList<Rider> riders = new LinkedList<>();
+        Cqueue<Rider> riders = new Cqueue<>();
 
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
@@ -313,8 +313,12 @@ public class Restaurant extends Entity {
                         if (restaurant.getOrderHistory().get(i).getOrderStatus().equals("Collected") || restaurant.getOrderHistory().get(i).getOrderStatus().equals("Delivered")) {
                             continue;
                         }
+                        System.out.println();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Order #" + i);
                         restaurant.getOrderHistory().get(i).describe();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println();
                         countCurrentOrders += 1;
                     }
                     if (countCurrentOrders >= 1) {
@@ -411,8 +415,12 @@ public class Restaurant extends Entity {
                 if (restaurant.getOrderHistory().size() != 0) {
                     System.out.println("Here's your order history.");
                     for (int i = 0; i < restaurant.getOrderHistory().size(); i++) {
+                        System.out.println();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Order #" + i);
                         restaurant.getOrderHistory().get(i).describe();
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println();
                     }
                 } else {
                     //if there are no orders for the restaurant, print this instead of printing nothing

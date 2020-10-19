@@ -4,7 +4,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Order {
@@ -79,23 +78,24 @@ public class Order {
 
     // method which prints order details
     public void describe() {
-        System.out.println("=======================================================================");
+        System.out.println("---------------------------------------------------------------");
         System.out.println("Customer making the Order: " + customer.getName());
         System.out.println("Restaurant taking the Order: " + restaurant.getName());
        if (pickupType.equals("Delivery")) {
            System.out.println("Rider taking the Order: " + rider.getName() + " his phone number: " + rider.getPhone());
        }
-        System.out.println("The total price: " + totalPrice);
+        System.out.println("---------------------------------------------------------------");
+        System.out.println("The total price: " + totalPrice );
         System.out.println("The status of this order is: " + orderStatus);
+
         System.out.println("The items are: ");
         System.out.println();
         // calling the item's describe method for each item in the order
         for (int i = 0; i < itemsToOrder.size(); i++) {
-            itemsToOrder.get(i).describe();
             System.out.println("Quantity : " + quantityOfItems.get(i));
+            itemsToOrder.get(i).describe();
         }
-        System.out.println("=======================================================================");
-        System.out.println();
+
     }
 
     public String toCSVString() {
@@ -140,7 +140,7 @@ public class Order {
         Files.write(Paths.get("./files/order/orders.csv"), sb.toString().getBytes());
     }
 
-    public static ArrayList<Order> getOrdersFromFile(ArrayList<Item> itemList, ArrayList<Restaurant> restaurantList, ArrayList<Customer> customerList, LinkedList<Rider> riderList) throws IOException {
+    public static ArrayList<Order> getOrdersFromFile(ArrayList<Item> itemList, ArrayList<Restaurant> restaurantList, ArrayList<Customer> customerList, Cqueue<Rider> riderList) throws IOException {
         ArrayList<Order> orders = new ArrayList<>();
 
         //read orders.csv from file
