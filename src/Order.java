@@ -70,6 +70,18 @@ public class Order {
     public String getPickupType() {
         return pickupType;
     }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Rider getRider() {
+        return rider;
+    }
     //setters
 
     public void setOrderStatus(String orderStatus) {

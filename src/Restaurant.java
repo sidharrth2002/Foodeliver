@@ -76,11 +76,11 @@ public class Restaurant extends Entity {
             orders = Order.getOrdersFromFile(items, restaurants, customers, riders);
             //add to each restaurant's order histories
             for (int i = 0; i < orders.size(); i++) {
-                if (orders.get(i).getCode().substring(3,5).equals("r1")) {
+                if (orders.get(i).getRestaurant().getCode().equals("r1")) {
                     restaurants.get(0).addOrder(orders.get(i));
-                } else if (orders.get(i).getCode().substring(3,5).equals("r2")) {
+                } else if (orders.get(i).getRestaurant().getCode().equals("r2")) {
                     restaurants.get(1).addOrder(orders.get(i));
-                } else if (orders.get(i).getCode().substring(3,5).equals("r3")) {
+                } else if (orders.get(i).getRestaurant().getCode().equals("r3")) {
                     restaurants.get(2).addOrder(orders.get(i));
                 }
             }

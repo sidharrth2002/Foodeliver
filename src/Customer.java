@@ -144,16 +144,16 @@ public class Customer extends Entity {
 
             //add to each restaurant's order histories
             for (int i = 0; i < orders.size(); i++) {
-                if (orders.get(i).getCode().substring(3,5).equals("r1")) {
-                    restaurants.get(0).getOrderHistory().add(orders.get(i));
-                } else if (orders.get(i).getCode().substring(3,5).equals("r2")) {
-                    restaurants.get(1).getOrderHistory().add(orders.get(i));
-                } else if (orders.get(i).getCode().substring(3,5).equals("r3")) {
-                    restaurants.get(2).getOrderHistory().add(orders.get(i));
+                if (orders.get(i).getRestaurant().getCode().equals("r1")) {
+                    restaurants.get(0).addOrder(orders.get(i));
+                } else if (orders.get(i).getRestaurant().getCode().equals("r2")) {
+                    restaurants.get(1).addOrder(orders.get(i));
+                } else if (orders.get(i).getRestaurant().getCode().equals("r3")) {
+                    restaurants.get(2).addOrder(orders.get(i));
                 }
 
                 for (int j = 0; j < customers.size(); j++) {
-                    if (customers.get(j).getCode().equals(orders.get(i).getCode().substring(6, 8))) {
+                    if (customers.get(j).getCode().equals(orders.get(i).getCustomer().getCode())) {
                         customers.get(j).addOrder(orders.get(i));
                     }
                 }
