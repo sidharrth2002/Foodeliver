@@ -9,7 +9,7 @@ import java.util.List;
 public class Order {
     private Restaurant restaurant;
     private Customer customer;
-    private Rider rider;
+    public Rider rider;
     private String orderStatus = "Preparing";
     private String code; //ordercode-restaurantcode-customercode-ridercode
     private String pickupType;

@@ -18,7 +18,6 @@ public class Customer extends Entity {
         this.code = "c" + count++;
     }
 
-
     public String getPhone() {
         return phone;
     }
