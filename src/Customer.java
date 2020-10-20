@@ -56,50 +56,6 @@ public class Customer extends Entity {
         return customers;
     }
 
-    //sorting functions----------
-    //Alphabetically
-    private static void sortAlphabetically(ArrayList<Item> itemsToSort) {
-        if (itemsToSort.size() > 0) {
-            //overrides the collections.sort by passing in a custom comparator to sort by particular field in an object
-            Collections.sort(itemsToSort, new Comparator< Item >() {
-                @Override
-                public int compare(final Item item1, final Item item2) {
-                    return item1.getName().compareTo(item2.getName());
-                }
-            });
-        }
-
-        //prints sorted items
-        for (int i = 0; i < itemsToSort.size(); i++) {
-            System.out.print("Item #" + i + ": ");
-            itemsToSort.get(i).describe();
-            System.out.println();
-        }
-    }
-
-    //By Price
-    private static void sortByPrice(ArrayList<Item> itemsToSort) {
-        System.out.println("We get here");
-        if (itemsToSort.size() > 0) {
-            //overriding Collections.sort with another custom comparator
-            Collections.sort(itemsToSort, new Comparator < Item > () {
-                @Override
-                public int compare(final Item item1, final Item item2) {
-                    if (item1.getPrice() == item2.getPrice()) {
-                        return 0;
-                    }
-                    return item1.getPrice() < item2.getPrice() ? -1 : 1;
-                }
-            });
-        }
-
-        for (int i = 0; i < itemsToSort.size(); i++) {
-            System.out.print("Item #" + i + ": ");
-            itemsToSort.get(i).describe();
-            System.out.println();
-        }
-    }
-
     //method creates an order and passes it to both restaurant and customer objects
     private static void makeOrder(Restaurant restaurant, Customer customer, Cqueue<Rider> riders, ArrayList <Item> itemsToOrder, ArrayList <Integer> quantityOfItems, String pickupType) {
         // make new order and pass it to 3 user types
@@ -255,14 +211,14 @@ public class Customer extends Entity {
                     System.out.println();
                     System.out.println("Sorted Alphabetically:");
                     System.out.println("+++++++++++++++++++++++++++++++++++");
-                    sortAlphabetically(itemsToSort);
+                    Item.sortAlphabetically(itemsToSort);
                     System.out.println("+++++++++++++++++++++++++++++++++++");
                 } else if (inputC3.equals("2")) {
                     System.out.println();
                     System.out.println();
                     System.out.println("Sorted by Price:");
                     System.out.println("+++++++++++++++++++++++++++++++++++");
-                    sortByPrice(itemsToSort);
+                    Item.sortByPrice(itemsToSort);
                     System.out.println("+++++++++++++++++++++++++++++++++++");
                 }
                 // adding order
@@ -325,10 +281,10 @@ public class Customer extends Entity {
                     // same sort as previous
                     if (inputC3.equals("1")) {
                         System.out.println("sorted alphabetically");
-                        sortAlphabetically(itemsToSort);
+                        Item.sortAlphabetically(itemsToSort);
                     } else if (inputC3.equals("2")) {
                         System.out.println("sorted by price");
-                        sortByPrice(itemsToSort);
+                        Item.sortByPrice(itemsToSort);
                     }
 
                     System.out.println("========================================");

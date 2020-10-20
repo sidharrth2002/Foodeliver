@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Item {
@@ -78,6 +80,51 @@ public class Item {
         System.out.println("Restaurant Serving this Item: " + restaurant.getName());*/
         System.out.print("\n-----------------------------------------------------------------------------------------------\n " );
     }
+
+    //sorting functions----------
+    //Alphabetically
+    public static void sortAlphabetically(ArrayList<Item> itemsToSort) {
+        if (itemsToSort.size() > 0) {
+            //overrides the collections.sort by passing in a custom comparator to sort by particular field in an object
+            Collections.sort(itemsToSort, new Comparator< Item >() {
+                @Override
+                public int compare(final Item item1, final Item item2) {
+                    return item1.getName().compareTo(item2.getName());
+                }
+            });
+        }
+
+        //prints sorted items
+        for (int i = 0; i < itemsToSort.size(); i++) {
+            System.out.print("Item #" + i + ": ");
+            itemsToSort.get(i).describe();
+            System.out.println();
+        }
+    }
+
+    //By Price
+    public static void sortByPrice(ArrayList<Item> itemsToSort) {
+        System.out.println("We get here");
+        if (itemsToSort.size() > 0) {
+            //overriding Collections.sort with another custom comparator
+            Collections.sort(itemsToSort, new Comparator < Item > () {
+                @Override
+                public int compare(final Item item1, final Item item2) {
+                    if (item1.getPrice() == item2.getPrice()) {
+                        return 0;
+                    }
+                    return item1.getPrice() < item2.getPrice() ? -1 : 1;
+                }
+            });
+        }
+
+        for (int i = 0; i < itemsToSort.size(); i++) {
+            System.out.print("Item #" + i + ": ");
+            itemsToSort.get(i).describe();
+            System.out.println();
+        }
+    }
+
 
     public String toCSVString() {
         return code + ",," + name + ",," + price + ",," + description;
