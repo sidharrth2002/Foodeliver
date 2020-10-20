@@ -77,7 +77,7 @@ public class Rider extends Entity {
             for (int i = 0; i < orders.size(); i++) {
                 if (orders.get(i).getPickupType().equals("Delivery")) {
                     for (int j = 0; j < riders.size(); j++) {
-                        if (orders.get(i).rider.equals(riders.get(j))) {
+                        if (orders.get(i).getRider().getCode().equals(riders.get(j).getCode())) {
                             riders.get(j).addOrder(orders.get(i));
                         }
                     }
