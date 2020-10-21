@@ -130,6 +130,7 @@ public class Item {
         return code + ",," + name + ",," + price + ",," + description;
     }
 
+    // writing to file
     public static void saveItemsToFile(ArrayList<Item> items) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < items.size(); i++) {
@@ -138,17 +139,16 @@ public class Item {
         Files.write(Paths.get("./files/item/items.csv"), sb.toString().getBytes());
     }
 
+    // Reading from file
     public static ArrayList<Item> getItemsFromFile(ArrayList<Restaurant> restaurants) throws IOException {
         ArrayList<Item> items = new ArrayList<>();
 
-        // read students.csv into a list of lines.
+        // read items.csv into a list of lines.
 
         List<String> lines = Files.readAllLines(Paths.get("./files/item/items.csv"));
         for (int i = 0; i < lines.size(); i++) {
             // split a line by comma
             String[] dataInFile = lines.get(i).split(",,");
-//            System.out.println(i);
-//            System.out.println(dataInFile.length);
             String code = dataInFile[0];
             String name = dataInFile[1];
             double price = Double.parseDouble(dataInFile[2]);

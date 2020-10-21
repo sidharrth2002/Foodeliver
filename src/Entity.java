@@ -10,7 +10,6 @@ public class Entity implements Comparable<Entity> {
 
     //both restaurant and customer have an orderHistory arraylist that they maintain separately
     //once a new order is made, it will be added to both of their histories
-//    protected ArrayList<Order> orderHistory = new ArrayList<Order>();
 
     public Entity() {}
 
@@ -25,7 +24,7 @@ public class Entity implements Comparable<Entity> {
         this.name = name;
     }
 
-    //getter
+    //getters to be used by children
     public String getName() {
         return name;
     }
@@ -38,6 +37,7 @@ public class Entity implements Comparable<Entity> {
         return address;
     }
 
+    //custom compareto that sorts from highest order number to lowest
     @Override
     public int compareTo(Entity entity) {
         if (entity.getOrderHistory().size() == this.getOrderHistory().size()) {
@@ -49,7 +49,7 @@ public class Entity implements Comparable<Entity> {
         }
     }
 
-    // used by the makeOrder function in Foodeliver to add a new order to the restaurant's and customer's order History
+    //used to load new orders to the order histories of different entities
     public void addOrder (Order newOrder) {
         orderHistory.add(newOrder);
     }

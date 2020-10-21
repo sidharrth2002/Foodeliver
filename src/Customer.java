@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
@@ -7,8 +8,6 @@ import java.util.*;
 public class Customer extends Entity {
     private String phone;
     private static int count = 1;
-
-    //static queue to assign riders
 
     public Customer() {}
 
@@ -22,14 +21,17 @@ public class Customer extends Entity {
         return phone;
     }
 
+    // method returns customer details for admin
     public String toString() {
         return "Customer Code: " + code + "\nCustomer Name: " + name + "\nCustomer Phone: " + phone + "\nOrder Count: " + getOrderHistory().size();
     }
 
+    // file handling-----
     public String toCSVString() {
         return name + ",," + address + ",," + phone;
     }
 
+    // writing to file
     private static void saveCustomersToFile(ArrayList<Customer> customers) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < customers.size(); i++) {
@@ -38,10 +40,11 @@ public class Customer extends Entity {
         Files.write(Paths.get("./files/customer/customers.csv"), sb.toString().getBytes());
     }
 
+    // Reading from file
     public static ArrayList<Customer> getCustomersFromFile() throws IOException {
         ArrayList<Customer> customers = new ArrayList<>();
 
-        // read students.csv into a list of lines.
+        // read customers.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get("./files/customer/customers.csv"));
         for (int i = 0; i < lines.size(); i++) {
             // split a line by comma
@@ -60,7 +63,6 @@ public class Customer extends Entity {
     private static void makeOrder(Restaurant restaurant, Customer customer, Cqueue<Rider> riders, ArrayList <Item> itemsToOrder, ArrayList <Integer> quantityOfItems, String pickupType) {
         // make new order and pass it to 3 user types
         if (pickupType.equals("Delivery")) {
-            // riders turn
             Rider crider = riders.getHead(); // current rider
             riders.removeFirst(); // delete current rider
             riders.add(crider); // add current rider to the end
@@ -75,7 +77,7 @@ public class Customer extends Entity {
         }
     }
 
-    //Stores all the food items from all the restaurants
+
 
 
     //main ---------------------------------------------------------------
@@ -90,6 +92,7 @@ public class Customer extends Entity {
         ArrayList<Order> orders = new ArrayList<>();
         Cqueue<Rider> riders = new Cqueue<>();
 
+        // Reading from files
         try {
             restaurants = Restaurant.getRestaurantsFromFile();
             items= Item.getItemsFromFile(restaurants);
@@ -113,26 +116,20 @@ public class Customer extends Entity {
                     }
                 }
             }
-
-
-            System.out.println(restaurants.get(0).getCode());
-
+        } catch (FileNotFoundException e) {
+            System.out.println("One of the files required for this program has not been found");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // adds riders queue to Customer class
-//        try {
-//            Customer.ridersq = Rider.getRidersFromFile();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
 
 
         Restaurant restaurant;
         Customer customer = null;
         String pickupType;
 
+        // welcome screen
         do {
             System.out.println("Welcome to Foodeliver Customer Interface");
             System.out.println("=======================");
@@ -243,7 +240,7 @@ public class Customer extends Entity {
                 String inputC4, inputC5;
                 boolean itemLoopCheck = false;
 
-                //error-handling loop
+                //input error-handling loop
                 do {
                     try {
                         System.out.println("Input:");
@@ -267,7 +264,7 @@ public class Customer extends Entity {
 
                 String currentRestaurantID = foodItem.getCode().substring(0, 2);
 
-
+                // adding more items
                 System.out.println("=============================================");
                 System.out.println("Do you want to add more items?");
                 System.out.println("Enter 1 to add more and anything else to stop:");
@@ -292,6 +289,7 @@ public class Customer extends Entity {
                     System.out.println("========================================");
 
                     boolean itemRepeatLoopCheck = false;
+                    //input error-handling loop
                     do {
                         try {
                             System.out.println("Input:");
@@ -326,7 +324,7 @@ public class Customer extends Entity {
                         }
                     } while (!itemRepeatLoopCheck);
 
-
+                    // stop adding items
                     System.out.println("Enter 1 to add more and anything else to stop.");
                     inputC6 = input.nextLine();
 
@@ -356,7 +354,7 @@ public class Customer extends Entity {
                     restaurant = restaurants.get(2);
                 }
 
-
+                // new order is created successfully
                 makeOrder(restaurant , customer , riders , itemsToOrder , quantityOfItems , pickupType);
 
                 System.out.println("======================================================================");
@@ -369,15 +367,17 @@ public class Customer extends Entity {
                     System.out.println("There are no past orders.");
                     System.out.println("Let's go back to main menu.");
                 } else {
-                    //loops through customer's order history and prints
+                    //loops through customer's order history and prints it
                     for (int i = 0; i < customer.getOrderHistory().size(); i++) {
                         System.out.println();
                         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Order #" + i);
                         customer.getOrderHistory().get(i).describe();
-                        //if ready to be collected, inform customer
+                        //if ready to be collected or delivered inform customer
                         if (customer.getOrderHistory().get(i).getOrderStatus().equals("Ready")) {
                             System.out.println("THIS ORDER IS READY TO BE COLLECTED.");
+                        }else if(customer.getOrderHistory().get(i).getOrderStatus().equals("Delivered")){
+                            System.out.println("THIS ORDER IS DELIVERED.");
                         }
                         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println();
@@ -386,15 +386,17 @@ public class Customer extends Entity {
 
             }
 
+            // go back to main menu
             System.out.println();
             System.out.println("Enter 1 to go back to main menu, where you can change to different customer");
             System.out.println("Enter anything else to terminate program.");
             System.out.println("Input:");
             String terminateFlag1 = input.nextLine();
 
+
             if (terminateFlag1.equals("1")) {
                 continue;
-            } else {
+            } else {//saves files and exit program
                 try {
                     saveCustomersToFile(customers);
                     orders.clear();
