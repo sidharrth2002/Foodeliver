@@ -7,12 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Order {
+    //Order aggregates the 3 entities involved (restaurant, customer and rider)
     private Restaurant restaurant;
     private Customer customer;
     public Rider rider;
     private String orderStatus = "Preparing";
     private String code; //ordercode-restaurantcode-customercode-ridercode
-    private String pickupType;
+    private String pickupType; //Delivery or Takeaway
 
     //contains item objects chosen
     public ArrayList<Item> itemsToOrder;
@@ -23,7 +24,7 @@ public class Order {
 
     public Order() {}
 
-    //used for takeaway
+    //used for takeaway orders (does not take rider object in constructor)
     public Order(Restaurant restaurant, Customer customer, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
         this.restaurant = restaurant;
         this.customer = customer;
@@ -35,7 +36,7 @@ public class Order {
         this.code = "o" + count++ + "-" + restaurant.getCode() + "-" + customer.getCode();
     }
 
-    //used for delivery
+    //used for delivery orders (takes rider object in constructor)
     public Order(Restaurant restaurant, Customer customer, Rider rider, ArrayList<Item> itemsToOrder, ArrayList<Integer> quantityOfItems, String pickupType, String orderStatus) {
         this.restaurant = restaurant;
         this.customer = customer;
@@ -59,6 +60,7 @@ public class Order {
         return total;
     }
 
+    //getters
     public String getCode() {
         return code;
     }
@@ -82,8 +84,8 @@ public class Order {
     public Rider getRider() {
         return rider;
     }
-    //setters
 
+    //setter
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
@@ -110,17 +112,22 @@ public class Order {
 
     }
 
+    // converts order details into a csv string
     public String toCSVString() {
         StringBuilder sb = new StringBuilder();
 
+        //adds order code, restaurant code and customer
         sb.append(code).append(",,").append(restaurant.getCode()).append(",,").append(customer.getCode()).append(",,");
 
+        //adds rider code if delivery order
+        //or d0 if takeaway
         if (pickupType.equals("Delivery")) {
             sb.append(rider.getCode()).append(",,").append(orderStatus).append(",,").append(pickupType);
         } else {
             sb.append("d0").append(",,").append(orderStatus).append(",,").append(pickupType);
         }
 
+        //adds the list of item codes (separated by single comma)
         StringBuilder sb2 = new StringBuilder();
         for (int i = 0; i < itemsToOrder.size(); i++) {
             if (i != itemsToOrder.size() - 1) {
@@ -130,6 +137,7 @@ public class Order {
             }
         }
 
+        //adds the quantity of each item (separated by single comma)
         StringBuilder sb3 = new StringBuilder();
         for (int i = 0; i < quantityOfItems.size(); i++) {
             if (i != quantityOfItems.size() - 1) {
@@ -139,11 +147,13 @@ public class Order {
             }
         }
 
+        //merges all 3 strings
         sb.append(",,").append(sb2.toString()).append(",,").append(sb3.toString());
 
         return sb.toString();
     }
 
+    //write order data to file
     public static void saveOrdersToFile(ArrayList<Order> orders) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < orders.size(); i++) {
@@ -206,10 +216,7 @@ public class Order {
                 }
             }
 
-//            System.out.println(restaurant.getCode());
-//            System.out.println(customer.getCode());
-//            System.out.println(rider.getCode());
-
+            //if delivery order, find rider object based on code
             if (pickupType.equals("Delivery")) {
                 Rider rider = null;
                 for (int j = 0; j < riderList.size(); j++) {
@@ -219,9 +226,11 @@ public class Order {
                     }
                 }
 
+                //use delivery constructor if delivery order
                 Order order = new Order(restaurant, customer, rider, itemsToOrder, quantityOfItems, pickupType, orderStatus);
                 orders.add(order);
             } else {
+                //use takeaway constructor if takeaway order
                 Order order = new Order(restaurant, customer, itemsToOrder, quantityOfItems, pickupType, orderStatus);
                 orders.add(order);
             }

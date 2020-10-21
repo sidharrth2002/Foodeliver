@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -13,6 +14,7 @@ public abstract class Admin {
         Cqueue<Rider> riders = new Cqueue<>();
 
         try {
+            //get data from files and load to arraylists
             restaurants = Restaurant.getRestaurantsFromFile();
             items = Item.getItemsFromFile(restaurants);
             customers = Customer.getCustomersFromFile();
@@ -28,12 +30,14 @@ public abstract class Admin {
                     restaurants.get(2).addOrder(orders.get(i));
                 }
 
+                //add to each customer's order histories
                 for (int j = 0; j < customers.size(); j++) {
                     if (customers.get(j).getCode().equals(orders.get(i).getCustomer().getCode())) {
                         customers.get(j).addOrder(orders.get(i));
                     }
                 }
 
+                //add to each rider's order histories only if it is a delivery order
                 if (orders.get(i).getPickupType().equals("Delivery")) {
                     for (int k = 0; k < riders.size(); k++) {
                         if (orders.get(i).getRider().getCode().equals(riders.get(k).getCode())) {
@@ -42,13 +46,14 @@ public abstract class Admin {
                     }
                 }
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("One of the files required for this program has not been found");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
         do {
-
             System.out.println("Welcome to Foodeliver Admin Interface");
             System.out.println("=======================");
             System.out.println("What do you want to do?");
@@ -60,6 +65,7 @@ public abstract class Admin {
             System.out.println("=======================");
             String inputa1 = input.nextLine();
 
+            //get option and get details of rider
             if (inputa1.equals("1")) {
                 System.out.println("Enter name of new rider: ");
                 String ridername = input.nextLine();
@@ -75,6 +81,7 @@ public abstract class Admin {
                     System.out.println("-----------------------------------");
                 }
             } else if (inputa1.equals("3")) {
+                //print all the orders in the system
                 System.out.println("Here is the list of consolidated orders: ");
                 for (Order order : orders) {
                     System.out.println();
@@ -86,6 +93,7 @@ public abstract class Admin {
             } else {
                 System.out.println();
                 System.out.println();
+                //entity class implements comparable, will sort based on size of order histories
                 System.out.println("==========================================");
                 System.out.println("RIDERS SORTED BY HIGHEST DELIVERY COUNT");
                 //making copy of riders list so as to not mess up the order of the queue
@@ -99,6 +107,7 @@ public abstract class Admin {
                     System.out.println(rider);
                     System.out.println("-----------------------------------");
                 }
+                //will sort based on size of order histories
                 System.out.println();
                 System.out.println();
                 System.out.println("==========================================");
@@ -110,6 +119,7 @@ public abstract class Admin {
                     System.out.println(restaurant);
                     System.out.println("-----------------------------------");
                 }
+                //will sort based on size of order histories
                 System.out.println();
                 System.out.println();
                 System.out.println("==========================================");
@@ -123,12 +133,15 @@ public abstract class Admin {
                 }
             }
 
+            //go for another iteration of the loop
+            //or save to file and terminate
             System.out.println("Press 1 to go back to main menu. Anything else to terminate.");
             String again = input.nextLine();
             if (again.equals("1")) {
                 continue;
             } else {
                 try {
+                    //since admin can add a new rider, have to save new riders queue to the file
                     Rider.saveRidersToFile(riders);
                     System.exit(0);
                 } catch (IOException e) {

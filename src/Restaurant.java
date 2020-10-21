@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,16 +8,19 @@ public class Restaurant extends Entity {
     //records order history for each restaurant
     public Restaurant() {}
 
+    //Restaurant's constructor
     public Restaurant(String code, String name, String address) {
         super(name, address);
         this.code = code;
     }
 
+    //gets items arraylist, creates a new item and adds to this arraylist
     public void addItem(ArrayList<Item> items, String name, double price, String description) {
         Item newItem = new Item(name, price, description, this);
         items.add(newItem);
     }
 
+    //updates the order status of a particular order
     public void setOrderStatus(int orderIndex, String newStatus) {
         orderHistory.get(orderIndex).setOrderStatus(newStatus);
     }
@@ -25,6 +29,7 @@ public class Restaurant extends Entity {
         return "Restaurant Code: " + code + "\nRestaurant Name: " + name + "\nRestaurant Address: " + address + "\nOrder Count: " + getOrderHistory().size();
     }
 
+    //CSV String used by function that saves in file
     private String toCSVString() {
         return code + ",," + name + ",," + address;
     }
@@ -38,16 +43,15 @@ public class Restaurant extends Entity {
         Files.write(Paths.get("./files/restaurant/restaurants.csv"), sb.toString().getBytes());
     }
 
-    //saving items data to file
-
-
+    //getting restaurants from file, creating new restaurant objects and returning an arraylist
     public static ArrayList<Restaurant> getRestaurantsFromFile() throws IOException {
         ArrayList<Restaurant> restaurants = new ArrayList<>();
 
         // read students.csv into a list of lines.
         List<String> lines = Files.readAllLines(Paths.get("./files/restaurant/restaurants.csv"));
         for (int i = 0; i < lines.size(); i++) {
-            // split a line by comma
+            // split a line by two commas
+            // this makes way for lists in the file that can use a single comma
             String[] dataInFile = lines.get(i).split(",,");
             String code = dataInFile[0];
             String name = dataInFile[1];
@@ -69,6 +73,7 @@ public class Restaurant extends Entity {
         Cqueue<Rider> riders = new Cqueue<>();
 
         try {
+            //load all the necessary data from the files
             restaurants = Restaurant.getRestaurantsFromFile();
             items= Item.getItemsFromFile(restaurants);
             customers = Customer.getCustomersFromFile();
@@ -84,7 +89,8 @@ public class Restaurant extends Entity {
                     restaurants.get(2).addOrder(orders.get(i));
                 }
             }
-
+        } catch (FileNotFoundException e) {
+            System.out.println("One of the files required for this program has not been found");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,6 +106,7 @@ public class Restaurant extends Entity {
             System.out.println("=======================");
             String inputR = input.nextLine();
 
+            //based on chosen restaurant, assign restaurant object
             Restaurant restaurant = null;
             // setting restaurant id
             if (inputR.equals("1")) {
@@ -131,7 +138,7 @@ public class Restaurant extends Entity {
 
                 }
 
-                // retaurant menu options
+                // restaurant menu options
                 boolean loopcheck = false;
                 while (loopcheck == false) {
                     System.out.println("=======================");
@@ -309,7 +316,7 @@ public class Restaurant extends Entity {
                 int countCurrentOrders = 0;
                 if (restaurant.getOrderHistory().size() != 0) {
                     for (int i = 0; i < restaurant.getOrderHistory().size(); i++) {
-                        //if the order has already been collected, don't display under current orders
+                        //if the order has already been collected or delivered, don't display under current orders
                         if (restaurant.getOrderHistory().get(i).getOrderStatus().equals("Collected") || restaurant.getOrderHistory().get(i).getOrderStatus().equals("Delivered")) {
                             continue;
                         }
@@ -370,8 +377,7 @@ public class Restaurant extends Entity {
                                 restaurant.setOrderStatus(orderIndex, newStatus);
                                 System.out.println("===================");
                                 System.out.println("Order status updated successfully");
-
-                                // ready
+                            //ready
                             } else if (orderStatus.equals("2")) {
                                 loopcheck2 = true;
                                 String newStatus = "Ready";
@@ -379,7 +385,7 @@ public class Restaurant extends Entity {
                                 System.out.println("===================");
                                 System.out.println("Order status updated successfully");
 
-                                // collected
+                            //delivering
                             } else if (orderStatus.equals("3")) {
                                 loopcheck2 = true;
                                 String newStatus = "Delivering";
@@ -387,12 +393,14 @@ public class Restaurant extends Entity {
                                 System.out.println("===================");
                                 System.out.println("Order status updated successfully");
 
+                            //collected
                             } else if (orderStatus.equals("4")) {
                                 loopcheck2 = true;
                                 String newStatus = "Collected";
                                 restaurant.setOrderStatus(orderIndex, newStatus);
                                 System.out.println("===================");
                                 System.out.println("Order status updated successfully");
+
 
                                 // error message for menu selection
                             } else {
@@ -401,9 +409,9 @@ public class Restaurant extends Entity {
                                 System.out.println("===================");
                             }
                         }
-                        // all orders collected
+                        // all orders completed
                     } else {
-                        System.out.println("All your orders have already been collected.");
+                        System.out.println("All your orders have already been collected/delivered.");
                     }
                     // no orders to view
                 } else {
@@ -438,7 +446,7 @@ public class Restaurant extends Entity {
             if (terminateFlag2.equals("1")) {
                 continue;
             } else {
-                //save everything to file before exiting
+                //save everything to files before exiting
                 try {
                     Item.saveItemsToFile(items);
                     Restaurant.saveRestaurantsToFile(restaurants);
@@ -450,8 +458,6 @@ public class Restaurant extends Entity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
                 System.exit(0);
             }
         } while(true);
